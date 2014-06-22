@@ -187,8 +187,6 @@ module _ (X : Set) (T : Topology X) where
     let module <U> = Cover _ _ <U> in
       Σ![ s ∶ F.apply (U , U-open) ]
         ((i : <U>.Index) →
-        let Ui₁ = π₁ (<U>.at i) in
-        let Ui₂ = π₁ (π₂ (<U>.at i)) in
         let Ui₃ = π₂ (π₂ (<U>.at i)) in
         F.map {U , U-open} Ui₃ s == <s> i)
 
