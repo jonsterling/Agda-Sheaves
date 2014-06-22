@@ -161,13 +161,13 @@ module _ (X : Set) (T : Topology X) where
 
       Section : Set
       Section =
-        (i : <U>.Index) → 
+        ∀ i → 
           let <U>i = <U>.at i in
           F.apply (π₁ <U>i , π₁ (π₂ <U>i))
     
       Coherence : Section → Set
       Coherence <s> =
-        {i j : <U>.Index} →
+        ∀ i j →
           let <U>i = <U>.at i in
           let <U>j = <U>.at j in
           let <U>ij = (π₁ <U>i ∩ π₁ <U>j) , (T.inter-open (π₁ (π₂ <U>i)) (π₁ (π₂ <U>j))) in 
@@ -186,7 +186,5 @@ module _ (X : Set) (T : Topology X) where
       →
     let module <U> = Cover _ _ <U> in
       Σ![ s ∶ F.apply (U , U-open) ]
-        ((i : <U>.Index) →
-        let Ui₃ = π₂ (π₂ (<U>.at i)) in
-        F.map {U , U-open} Ui₃ s == <s> i)
+        (∀ i → F.map {U , U-open} (π₂ (π₂ (<U>.at i))) s == <s> i)
 
