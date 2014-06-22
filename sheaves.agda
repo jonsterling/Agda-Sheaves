@@ -150,31 +150,26 @@ module _ (X : Set) (T : Topology X) where
         at : (i : Index) → Σ[ Ui ∶ P X ] T.O Ui × (Ui ⊆ U)
         covering : (x : X) (x∈U : U x) → Σ[ i ∶ Index ] π₁ (at i) x
     
-    Section : Presheaf → Cover → Set
-    Section F <U> =
-      let module F = Functor F in
-      let module <U> = Cover <U> in
-      (i : <U>.Index) → 
-        let <U>i = <U>.at i in
-        F.apply (π₁ <U>i , π₁ (π₂ <U>i))
-    
-    module _ (F : Presheaf) where
+    module _ (F : Presheaf) (<U> : Cover) where
       private
         module F = Functor F 
+        module <U> = Cover <U> 
 
-      module _ (<U> : Cover) (<s> : Section F <U>) where
-        private
-          module <U> = Cover <U> 
-
-        Coherence : Set
-        Coherence =
-          {i j : <U>.Index} →
-            let <U>i = <U>.at i in
-            let <U>j = <U>.at j in
-            let <U>ij = (π₁ <U>i ∩ π₁ <U>j) , (T.inter-open (π₁ (π₂ <U>i)) (π₁ (π₂ <U>j))) in 
-            F.map {π₁ <U>i , π₁ (π₂ <U>i)} {<U>ij} (λ _ → π₁) (<s> i)
-              ==
-            F.map {π₁ <U>j , π₁ (π₂ <U>j)} {<U>ij} (λ _ → π₂) (<s> j)
+      Section : Set
+      Section =
+        (i : <U>.Index) → 
+          let <U>i = <U>.at i in
+          F.apply (π₁ <U>i , π₁ (π₂ <U>i))
+    
+      Coherence : Section → Set
+      Coherence <s> =
+        {i j : <U>.Index} →
+          let <U>i = <U>.at i in
+          let <U>j = <U>.at j in
+          let <U>ij = (π₁ <U>i ∩ π₁ <U>j) , (T.inter-open (π₁ (π₂ <U>i)) (π₁ (π₂ <U>j))) in 
+          F.map {π₁ <U>i , π₁ (π₂ <U>i)} {<U>ij} (λ _ → π₁) (<s> i)
+            ==
+          F.map {π₁ <U>j , π₁ (π₂ <U>j)} {<U>ij} (λ _ → π₂) (<s> j)
 
   Sheaf : Presheaf → Set
   Sheaf F =
