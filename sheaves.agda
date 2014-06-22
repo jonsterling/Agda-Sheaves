@@ -110,7 +110,7 @@ record Functor (C D : Category) : Set where
     map : ∀ {A B} → C.Hom A B → D.Hom (apply A) (apply B)
 
     id-law : ∀ {A} → map (C.id {A}) D.~ D.id
-    comp-law : ∀ {A B C} (f : C.Hom B C) (g : C.Hom A B) → map (f C.∘ g) D.~ ((map f) D.∘ (map g))
+    comp-law : ∀ {A B C} (f : C.Hom B C) (g : C.Hom A B) → map (f C.∘ g) D.~ (map f D.∘ map g)
 
 Types : Category
 Types =
@@ -119,9 +119,13 @@ Types =
   { Ob = Set
   ; Hom = λ A B → A → B
   ; _~_ = λ f g → ∀ x → f x == g x
-  ; ~-equiv = record { reflexivity = λ x → refl ; !_ = λ {f} {g} p x → ! p x ; _∙_ = λ {f} {g} {h} p q r → p r ∙ q r }
+  ; ~-equiv = record
+                 { reflexivity = λ x → refl
+                 ; !_ = λ {f} {g} p x → ! p x
+                 ; _∙_ = λ {f} {g} {h} p q r → p r ∙ q r
+                 }
   ; id = λ {A} z → z
-  ; _∘_ = λ {A} {B} {C} z z₁ z₂ → z (z₁ z₂)
+  ; _∘_ = λ {A} {B} {C} f g x → f (g x)
   ; left-id = λ {A} {B} {f} x → refl
   ; right-id = λ {A} {B} {f} x → refl
   ; assoc = λ x → refl
