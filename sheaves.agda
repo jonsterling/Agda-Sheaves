@@ -84,9 +84,7 @@ record Category : Set where
     right-id : ∀ {A B} {f : Hom A B} → (f ∘ id) ~ f
 
     assoc : ∀ {A B C D} {f : Hom A B} {g : Hom B C} {h : Hom C D} → ((h ∘ g) ∘ f) ~ (h ∘ (g ∘ f))
-
-  _[_,_] = Hom
-
+    
   opposite : Category
   opposite = record
                { Ob = Ob
