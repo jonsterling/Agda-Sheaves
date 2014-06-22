@@ -86,17 +86,19 @@ record Category : Set where
     assoc : ∀ {A B C D} {f : Hom A B} {g : Hom B C} {h : Hom C D} → ((h ∘ g) ∘ f) ~ (h ∘ (g ∘ f))
     
   opposite : Category
-  opposite = record
-               { Ob = Ob
-               ; Hom = λ A B → Hom B A
-               ; _~_ = _~_
-               ; ~-equiv = ~-equiv
-               ; id = id
-               ; _∘_ = λ f g → g ∘ f
-               ; left-id = λ {A} {B} → right-id
-               ; right-id = λ {A} {B} → left-id
-               ; assoc = λ {A} {B} {C} {D} {f} {g} {h} → (Equivalence.! ~-equiv) assoc
-               }
+  opposite =
+    let open Equivalence {{...}} in 
+    record
+    { Ob = Ob
+    ; Hom = λ A B → Hom B A
+    ; _~_ = _~_
+    ; ~-equiv = ~-equiv
+    ; id = id
+    ; _∘_ = λ f g → g ∘ f
+    ; left-id = λ {A} {B} → right-id
+    ; right-id = λ {A} {B} → left-id
+    ; assoc = λ {A} {B} {C} {D} {f} {g} {h} → ! assoc
+    }
 
 
 record Functor (C D : Category) : Set where
@@ -111,17 +113,19 @@ record Functor (C D : Category) : Set where
     comp-law : ∀ {A B C} (f : C.Hom B C) (g : C.Hom A B) → map (f C.∘ g) D.~ ((map f) D.∘ (map g))
 
 Types : Category
-Types = record
-          { Ob = Set
-          ; Hom = λ A B → A → B
-          ; _~_ = λ f g → ∀ x → f x == g x
-            ; ~-equiv = let open Equivalence {{...}} in record { reflexivity = λ x → refl ; !_ = λ {f} {g} p x → ! p x ; _∙_ = λ {f} {g} {h} p q r → p r ∙ q r }
-          ; id = λ {A} z → z
-          ; _∘_ = λ {A} {B} {C} z z₁ z₂ → z (z₁ z₂)
-          ; left-id = λ {A} {B} {f} x → refl
-          ; right-id = λ {A} {B} {f} x → refl
-          ; assoc = λ x → refl
-          }
+Types =
+  let open Equivalence {{...}} in 
+  record
+  { Ob = Set
+  ; Hom = λ A B → A → B
+  ; _~_ = λ f g → ∀ x → f x == g x
+  ; ~-equiv = record { reflexivity = λ x → refl ; !_ = λ {f} {g} p x → ! p x ; _∙_ = λ {f} {g} {h} p q r → p r ∙ q r }
+  ; id = λ {A} z → z
+  ; _∘_ = λ {A} {B} {C} z z₁ z₂ → z (z₁ z₂)
+  ; left-id = λ {A} {B} {f} x → refl
+  ; right-id = λ {A} {B} {f} x → refl
+  ; assoc = λ x → refl
+  }
 
 module _ (X : Set) (T : Topology X) where
   private
