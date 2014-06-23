@@ -8,14 +8,16 @@ data ⊥ : Set where
 data _==_ {A : Set} (x : A) : A → Set where
   refl : x == x
 
-record Σ (A : Set) (B : A → Set) : Set where
-  constructor _,_
-  field
-    π₁ : A
-    π₂ : B π₁
-open Σ public
+module _ (A : Set) (B : A → Set) where
+  record Σ : Set where
+    constructor _,_
+    field
+      π₁ : A
+      π₂ : B π₁
+  open Σ public
+  syntax Σ A (λ x → B) = Σ[ x ∶ A ] B
 
-syntax Σ A (λ x → B) = Σ[ x ∶ A ] B
+
 
 isContr : Set → Set
 isContr A = Σ[ x ∶ A ] (∀ y → x == y)
@@ -25,30 +27,27 @@ isContr A = Σ[ x ∶ A ] (∀ y → x == y)
 
 syntax Σ! A (λ x → B) = Σ![ x ∶ A ] B
 
-data _+_ (A B : Set) : Set where
-  inl : A → A + B
-  inr : B → A + B
-
 _×_ : (A B : Set) → Set
 A × B = Σ A λ _ → B
 
 P : Set → Set
 P A = A → Set
 
-empty : {A : Set} → P A
-empty = λ x → ⊥
-
-full : {A : Set} → P A
-full = λ x → ⊤
-
-_∩_ : {A : Set} → P A → P A → P A
-U ∩ V = λ x → (U x) × (V x)
-
-_⊆_ : {A : Set} → P A → P A → Set
-U ⊆ V = ∀ x → U x → V x
-
-⋃[_] : {A : Set} → P (P A) → P A
-⋃[_] {A} S = λ x → Σ[ U ∶ P A ] S U × U x
+module _ {A : Set} where
+  empty : P A
+  empty = λ x → ⊥
+  
+  full : P A
+  full = λ x → ⊤
+  
+  _∩_ : P A → P A → P A
+  U ∩ V = λ x → (U x) × (V x)
+  
+  _⊆_ : P A → P A → Set
+  U ⊆ V = ∀ x → U x → V x
+  
+  ⋃[_] : P (P A) → P A
+  ⋃[_] S = λ x → Σ[ U ∶ P A ] S U × U x
 
 record Topology (X : Set) : Set where
   field
