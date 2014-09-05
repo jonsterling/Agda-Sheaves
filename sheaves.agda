@@ -65,8 +65,9 @@ record Equivalence {A : Set} (R : A → A → Set) : Set where
     _∙_ : {x y z : A} → R y z → R x y → R x z
   infixr 9 _∙_
 
-==-equiv : ∀ {A} → Equivalence (_==_ {A})
-==-equiv = record { reflexivity = refl ; !_ = λ { {x} {.x} refl → refl }; _∙_ = λ { {x} {.y} {y} refl q → q } }
+instance
+  ==-equiv : ∀ {A} → Equivalence (_==_ {A})
+  ==-equiv = record { reflexivity = refl ; !_ = λ { {x} {.x} refl → refl }; _∙_ = λ { {x} {.y} {y} refl q → q } }
 
 record Category : Set where
   field
@@ -83,10 +84,13 @@ record Category : Set where
     right-id : ∀ {A B} {f : Hom A B} → (f ∘ id) ~ f
 
     assoc : ∀ {A B C D} {f : Hom A B} {g : Hom B C} {h : Hom C D} → ((h ∘ g) ∘ f) ~ (h ∘ (g ∘ f))
+
+  instance
+    ~-equiv-instance = ~-equiv
     
   opposite : Category
   opposite =
-    let open Equivalence {{...}} in 
+    let open Equivalence {{...}} in
     record
     { Ob = Ob
     ; Hom = λ A B → Hom B A
